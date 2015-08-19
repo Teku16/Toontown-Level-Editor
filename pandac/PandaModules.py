@@ -35,6 +35,12 @@ except ImportError, err:
         raise
 
 try:
+  from libpandaeggModules import *
+except ImportError, err:
+  if "DLL loader cannot find" not in str(err):
+    raise
+
+try:
     from libotpModules import *
 except ImportError, err:
     if 'DLL loader cannot find' not in str(err):

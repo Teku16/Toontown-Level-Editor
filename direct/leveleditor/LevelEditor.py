@@ -443,8 +443,11 @@ class LevelEditor(NodePath, DirectObject):
         self.panel.streetSelector.invoke()
         self.panel.toonBuildingSelector.selectitem(0)
         self.panel.toonBuildingSelector.invoke()
-        self.panel.landmarkBuildingSelector.selectitem(0)
-        self.panel.landmarkBuildingSelector.invoke()
+        try:
+            self.panel.landmarkBuildingSelector.selectitem(0)
+            self.panel.landmarkBuildingSelector.invoke()
+        except:
+            self.panel.notebook.delete('Landmark Bldgs')
         self.panel.propSelector.selectitem(0)
         self.panel.propSelector.invoke()
         # Start off with 20 foot buildings
@@ -4399,49 +4402,55 @@ class LevelEditorPanel(Pmw.MegaToplevel):
         self.landmarkHQButton.pack(side = LEFT, expand = 1, fill = X)
         """
 
-        self.addLandmarkBuildingButton = Button(
-            landmarkBuildingsPage,
-            text = 'ADD LANDMARK BUILDING',
-            command = self.addLandmark)
-        self.addLandmarkBuildingButton.pack(fill = X, padx = 20, pady = 10)
-        bldgs = map(lambda s: s[14:],
-                    self.styleManager.getCatalogCodes(
-            'toon_landmark'))
-        bldgs.sort()
-        self.landmarkBuildingSelector = Pmw.ComboBox(
-            landmarkBuildingsPage,
-            dropdown = 0,
-            listheight = 200,
-            labelpos = W,
-            label_width = 12,
-            label_anchor = W,
-            label_text = 'Bldg type:',
-            entry_width = 30,
-            selectioncommand = self.setLandmarkType,
-            scrolledlist_items = bldgs
-            )
-        self.landmarkType = self.styleManager.getCatalogCode(
-            'toon_landmark', 0)
-        self.landmarkBuildingSelector.selectitem(
-            self.styleManager.getCatalogCode('toon_landmark', 0)[14:])
-        self.landmarkBuildingSelector.pack(expand = 1, fill = BOTH)
+        try:
+            self.addLandmarkBuildingButton = Button(
+                landmarkBuildingsPage,
+                text = 'ADD LANDMARK BUILDING',
+                command = self.addLandmark)
+            self.addLandmarkBuildingButton.pack(fill = X, padx = 20, pady = 10)
+            bldgs = map(lambda s: s[14:],
+                        self.styleManager.getCatalogCodes(
+                'toon_landmark'))
+            bldgs.sort()
+            self.landmarkBuildingSelector = Pmw.ComboBox(
+                landmarkBuildingsPage,
+                dropdown = 0,
+                listheight = 200,
+                labelpos = W,
+                label_width = 12,
+                label_anchor = W,
+                label_text = 'Bldg type:',
+                entry_width = 30,
+                selectioncommand = self.setLandmarkType,
+                scrolledlist_items = bldgs
+                )
+            self.landmarkType = self.styleManager.getCatalogCode(
+                'toon_landmark', 0)
 
-        self.landmarkBuildingSpecialSelector = Pmw.ComboBox(
-            landmarkBuildingsPage,
-            dropdown = 0,
-            listheight = 100,
-            labelpos = W,
-            label_width = 12,
-            label_anchor = W,
-            label_text = 'Special type:',
-            entry_width = 30,
-            selectioncommand = self.setLandmarkSpecialType,
-            scrolledlist_items = LANDMARK_SPECIAL_TYPES
-            )
-        self.landmarkSpecialType = LANDMARK_SPECIAL_TYPES[0]
-        self.landmarkBuildingSpecialSelector.selectitem(
-            LANDMARK_SPECIAL_TYPES[0])
-        self.landmarkBuildingSpecialSelector.pack(expand = 0)
+            self.landmarkBuildingSelector.selectitem(
+                self.styleManager.getCatalogCode('toon_landmark', 0)[14:])
+            self.landmarkBuildingSelector.pack(expand = 1, fill = BOTH)
+
+            self.landmarkBuildingSpecialSelector = Pmw.ComboBox(
+                landmarkBuildingsPage,
+                dropdown = 0,
+                listheight = 100,
+                labelpos = W,
+                label_width = 12,
+                label_anchor = W,
+                label_text = 'Special type:',
+                entry_width = 30,
+                selectioncommand = self.setLandmarkSpecialType,
+                scrolledlist_items = LANDMARK_SPECIAL_TYPES
+                )
+            self.landmarkSpecialType = LANDMARK_SPECIAL_TYPES[0]
+            self.landmarkBuildingSpecialSelector.selectitem(
+                LANDMARK_SPECIAL_TYPES[0])
+            self.landmarkBuildingSpecialSelector.pack(expand = 0)
+
+        except:
+            print "No landmark buildings found in DNA Storage(s) for " + str(hoods)
+
 
         # SIGNS
         Label(signPage, text = 'Signs',
